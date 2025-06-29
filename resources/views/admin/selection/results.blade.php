@@ -19,7 +19,7 @@
 
     <div class="row g-2">
         @forelse ($majorStatistics as $majorName => $stats)
-            <div class="col-md-6 col-lg-4">
+            <div class="col-12 col-sm-6 col-lg-4">
                 <div class="card border-0 shadow-xs h-100">
                     <div class="card-header bg-light py-2 px-3 d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center">
@@ -66,36 +66,38 @@
             </div>
         @endforelse
     </div>
+
     <div class="card border-0 shadow-sm mb-4 mt-4">
         <div class="card-body p-0">
             <ul class="nav nav-tabs nav-tabs-card" id="resultsTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active px-4 py-3" id="accepted-tab" data-bs-toggle="tab"
+                    <button class="nav-link active px-3 px-md-4 py-3" id="accepted-tab" data-bs-toggle="tab"
                         data-bs-target="#accepted" type="button">
-                        <i class="bi bi-check-circle me-2"></i> Diterima ({{ $acceptedStudents->count() }})
+                        <i class="bi bi-check-circle me-2"></i> <span class="d-none d-md-inline">Diterima</span>
+                        ({{ $acceptedStudents->count() }})
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link px-4 py-3" id="rejected-tab" data-bs-toggle="tab" data-bs-target="#rejected"
-                        type="button">
-                        <i class="bi bi-x-circle me-2"></i> Tidak Diterima ({{ $rejectedStudents->count() }})
+                    <button class="nav-link px-3 px-md-4 py-3" id="rejected-tab" data-bs-toggle="tab"
+                        data-bs-target="#rejected" type="button">
+                        <i class="bi bi-x-circle me-2"></i> <span class="d-none d-md-inline">Tidak Diterima</span>
+                        ({{ $rejectedStudents->count() }})
                     </button>
                 </li>
             </ul>
 
-            <div class="tab-content p-3">
+            <div class="tab-content p-2 p-md-3">
                 <div class="tab-pane fade show active" id="accepted" role="tabpanel">
                     <div class="table-responsive">
-                        {{-- Tambahkan ID untuk DataTables --}}
-                        <table class="table table-hover align-middle" id="acceptedStudentsTable">
+                        <table class="table table-hover align-middle w-100" id="acceptedStudentsTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th width="120">NISN</th>
+                                    <th>NISN</th>
                                     <th>Nama Siswa</th>
-                                    <th width="100">Nilai</th>
-                                    <th width="200">Jurusan</th>
-                                    <th width="200">Pilihan 1</th>
-                                    <th width="200">Pilihan 2</th>
+                                    <th>Nilai</th>
+                                    <th class="d-none d-md-table-cell">Jurusan</th>
+                                    <th class="d-none d-lg-table-cell">Pilihan 1</th>
+                                    <th class="d-none d-lg-table-cell">Pilihan 2</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -104,17 +106,22 @@
                                         <td>{{ $student->nisn }}</td>
                                         <td>
                                             <strong>{{ $student->name }}</strong>
+                                            <div class="d-md-none mt-1">
+                                                <span class="badge bg-success bg-opacity-10 text-success">
+                                                    <i class="bi bi-check-circle me-1"></i> {{ $student->accepted_major }}
+                                                </span>
+                                            </div>
                                         </td>
                                         <td>
                                             <span class="badge bg-light text-dark">{{ $student->final_score }}</span>
                                         </td>
-                                        <td>
+                                        <td class="d-none d-md-table-cell">
                                             <span class="badge bg-success bg-opacity-10 text-success">
                                                 <i class="bi bi-check-circle me-1"></i> {{ $student->accepted_major }}
                                             </span>
                                         </td>
-                                        <td class="small">{{ $student->choice_1 }}</td>
-                                        <td class="small">{{ $student->choice_2 ?? '-' }}</td>
+                                        <td class="small d-none d-lg-table-cell">{{ $student->choice_1 }}</td>
+                                        <td class="small d-none d-lg-table-cell">{{ $student->choice_2 ?? '-' }}</td>
                                     </tr>
                                 @empty
                                     <tr>
@@ -131,16 +138,15 @@
 
                 <div class="tab-pane fade" id="rejected" role="tabpanel">
                     <div class="table-responsive">
-                        {{-- Tambahkan ID untuk DataTables --}}
-                        <table class="table table-hover align-middle" id="rejectedStudentsTable">
+                        <table class="table table-hover align-middle w-100" id="rejectedStudentsTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th width="120">NISN</th>
+                                    <th>NISN</th>
                                     <th>Nama Siswa</th>
-                                    <th width="100">Nilai</th>
-                                    <th width="200">Pilihan 1</th>
-                                    <th width="200">Pilihan 2</th>
-                                    <th width="120">Status</th>
+                                    <th>Nilai</th>
+                                    <th class="d-none d-lg-table-cell">Pilihan 1</th>
+                                    <th class="d-none d-lg-table-cell">Pilihan 2</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -149,12 +155,18 @@
                                         <td>{{ $student->nisn }}</td>
                                         <td>
                                             <strong>{{ $student->name }}</strong>
+                                            <div class="d-lg-none mt-1">
+                                                <div class="small text-muted">Pilihan 1: {{ $student->choice_1 }}</div>
+                                                @if ($student->choice_2)
+                                                    <div class="small text-muted">Pilihan 2: {{ $student->choice_2 }}</div>
+                                                @endif
+                                            </div>
                                         </td>
                                         <td>
                                             <span class="badge bg-light text-dark">{{ $student->final_score }}</span>
                                         </td>
-                                        <td class="small">{{ $student->choice_1 }}</td>
-                                        <td class="small">{{ $student->choice_2 ?? '-' }}</td>
+                                        <td class="small d-none d-lg-table-cell">{{ $student->choice_1 }}</td>
+                                        <td class="small d-none d-lg-table-cell">{{ $student->choice_2 ?? '-' }}</td>
                                         <td>
                                             <span class="badge bg-danger bg-opacity-10 text-danger">
                                                 <i class="bi bi-x-circle me-1"></i> {{ $student->status }}
@@ -186,6 +198,7 @@
             border: none;
             color: #6c757d;
             font-weight: 500;
+            white-space: nowrap;
         }
 
         .nav-tabs-card .nav-link.active {
@@ -200,6 +213,23 @@
 
         .shadow-xs {
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 767.98px) {
+            .nav-tabs-card .nav-link {
+                padding: 0.75rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            .card-body {
+                padding: 0.5rem;
+            }
+
+            .table td,
+            .table th {
+                padding: 0.5rem;
+            }
         }
     </style>
 @endsection
@@ -216,7 +246,29 @@
                     [2, "desc"]
                 ],
                 "pageLength": 10,
-                "responsive": true // Tambahkan ini jika Anda ingin fitur responsif DataTables
+                "responsive": true,
+                "autoWidth": false,
+                "columnDefs": [{
+                        "responsivePriority": 1,
+                        "targets": 0
+                    }, // NISN
+                    {
+                        "responsivePriority": 2,
+                        "targets": 1
+                    }, // Nama
+                    {
+                        "responsivePriority": 3,
+                        "targets": 2
+                    }, // Nilai
+                    {
+                        "responsivePriority": 4,
+                        "targets": 3
+                    }, // Jurusan
+                    {
+                        "responsivePriority": 5,
+                        "targets": -1
+                    } // Pilihan 2
+                ]
             });
 
             // Inisialisasi DataTables untuk tabel siswa Tidak Diterima
@@ -228,24 +280,33 @@
                     [2, "desc"]
                 ],
                 "pageLength": 10,
-                "responsive": true // Tambahkan ini jika Anda ingin fitur responsif DataTables
+                "responsive": true,
+                "autoWidth": false,
+                "columnDefs": [{
+                        "responsivePriority": 1,
+                        "targets": 0
+                    }, // NISN
+                    {
+                        "responsivePriority": 2,
+                        "targets": 1
+                    }, // Nama
+                    {
+                        "responsivePriority": 3,
+                        "targets": 2
+                    }, // Nilai
+                    {
+                        "responsivePriority": 5,
+                        "targets": -1
+                    } // Status
+                ]
             });
 
-            // MODIFIKASI BAGIAN INI
+            // Handle tab change to adjust DataTables
             $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
-                // Dapatkan semua instance DataTables yang terlihat
-                var table = $($.fn.dataTable.tables(true)).DataTable();
-
-                // Hanya sesuaikan kolom jika DataTables ada
-                if (table) {
-                    table.columns.adjust();
-
-                    // Panggil responsive.recalc() hanya jika ekstensi 'responsive' diaktifkan
-                    // dan objek responsive ada pada instance DataTables.
-                    if (table.responsive && typeof table.responsive.recalc === 'function') {
-                        table.responsive.recalc();
-                    }
-                }
+                $.fn.dataTable.tables({
+                    visible: true,
+                    api: true
+                }).columns.adjust().responsive.recalc();
             });
         });
     </script>
